@@ -85,30 +85,33 @@ This creates a static export in the `out/` directory, ready for deployment.
 
 ## 📦 Deployment
 
-### GitHub Pages
+### GitHub Pages (Recommended - Automated)
 
-1. **Configure `next.config.js`:**
-   ```js
-   module.exports = {
-     output: 'export',
-     basePath: '/your-repo-name', // Only for project pages
-     images: { unoptimized: true },
-   }
-   ```
+This project includes a GitHub Actions workflow for automatic deployment!
 
-2. **Build and deploy:**
-   ```bash
-   npm run build
-   # Deploy the 'out' folder to GitHub Pages
-   ```
+**Quick Start:**
+```bash
+# 1. Push to GitHub
+git add .
+git commit -m "Initial commit"
+git push origin main
+
+# 2. Enable GitHub Pages in repository settings
+# Settings → Pages → Source: "GitHub Actions"
+
+# 3. Done! Your site deploys automatically
+# https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/
+```
+
+**📖 See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions**
 
 ### Other Static Hosts
 
 Deploy the `out/` directory to any static hosting service:
-- Vercel
-- Netlify
-- Cloudflare Pages
-- AWS S3 + CloudFront
+- **Vercel** - `npx vercel --prod`
+- **Netlify** - Drag & drop `out/` folder
+- **Cloudflare Pages** - Connect GitHub repo
+- **AWS S3** - Upload `out/` to S3 bucket
 
 ## 🛠️ Tech Stack
 

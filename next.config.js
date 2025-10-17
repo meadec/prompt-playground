@@ -4,8 +4,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Uncomment for GitHub Pages project pages
-  // basePath: '/repo-name',
+  // Automatically configured by GitHub Actions for GitHub Pages
+  // For local development, this will be undefined and work normally
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '',
 }
 
 module.exports = nextConfig
