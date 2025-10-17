@@ -38,3 +38,33 @@ export function debounce<T extends (...args: any[]) => any>(
     timeout = setTimeout(() => func(...args), wait)
   }
 }
+
+export function flattenTree<T extends { id: string; children?: T[] }>(
+  nodes: T[]
+): T[] {
+  const result: T[] = []
+  const flatten = (items: T[]) => {
+    items.forEach((item) => {
+      result.push(item)
+      if (item.children && item.children.length > 0) {
+        flatten(item.children)
+      }
+    })
+  }
+  flatten(nodes)
+  return result
+}
+
+export function isDescendant(
+  blockId: string,
+  potentialAncestorId: string,
+  allBlocks: Array<{ id: string; parentId: string | null }>
+): boolean {
+  let currentId: string | null = blockId
+  while (currentId) {
+    if (currentId === potentialAncestorId) return true
+    const block = allBlocks.find((b) => b.id === currentId)
+    currentId = block?.parentId || null
+  }
+  return false
+}

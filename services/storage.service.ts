@@ -353,6 +353,18 @@ class StorageService {
     const block = this.getBlockById(blockId)
     if (!block) return
 
+    // Validate new parent
+    if (newParentId) {
+      const newParent = this.getBlockById(newParentId)
+      
+      // Parent must exist and be a container
+      if (!newParent) return
+      if (newParent.type !== 'container') return
+      
+      // Cannot move a block into itself or its descendants
+      if (this.isDescendantOf(newParentId, blockId)) return
+    }
+
     const oldParentId = block.parentId
     const oldOrder = block.order
 
@@ -380,6 +392,19 @@ class StorageService {
       this.reorderSiblings(oldParentId)
     }
     this.reorderSiblings(newParentId)
+  }
+
+  private isDescendantOf(potentialDescendantId: string, ancestorId: string): boolean {
+    let currentId: string | null = potentialDescendantId
+    const blocks = this.getAllBlocks()
+    
+    while (currentId) {
+      if (currentId === ancestorId) return true
+      const block = blocks.find((b) => b.id === currentId)
+      currentId = block?.parentId || null
+    }
+    
+    return false
   }
 
   private updateDescendantDepths(blockId: string, parentDepth: number): void {
