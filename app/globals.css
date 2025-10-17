@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+    --primary-hover: 224 76% 48%;
+    --primary-light: 213 97% 87%;
+    --secondary: 262 83% 58%;
+    --secondary-foreground: 210 40% 98%;
+    --secondary-hover: 263 70% 50%;
+    --secondary-light: 263 90% 92%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --destructive-light: 0 86% 95%;
+    --success: 142 71% 45%;
+    --success-light: 142 76% 92%;
+    --warning: 38 92% 50%;
+    --warning-light: 48 96% 89%;
+    --info: 199 89% 48%;
+    --info-light: 195 92% 90%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+    --radius: 0.5rem;
+    --snippet-card: 240 10% 98%;
+    --snippet-hover: 240 5% 96%;
+    --block-container: 0 0% 100%;
+    --block-border: 214 32% 91%;
+    --block-hover: 213 97% 97%;
+    --block-selected: 213 97% 92%;
+    --syntax-tag: 262 83% 58%;
+    --syntax-attribute: 199 89% 48%;
+    --syntax-value: 142 71% 45%;
+    --syntax-text: 222 47% 11%;
+  }
+
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 213 94% 68%;
+    --primary-foreground: 222 47% 11%;
+    --primary-hover: 217 91% 60%;
+    --primary-light: 221 83% 25%;
+    --secondary: 270 91% 75%;
+    --secondary-foreground: 222 47% 11%;
+    --secondary-hover: 263 85% 70%;
+    --secondary-light: 262 83% 25%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 72% 65%;
+    --destructive-foreground: 210 40% 98%;
+    --destructive-light: 0 84% 25%;
+    --success: 142 76% 60%;
+    --success-light: 142 71% 20%;
+    --warning: 38 92% 60%;
+    --warning-light: 38 92% 20%;
+    --info: 191 91% 65%;
+    --info-light: 199 89% 20%;
+    --border: 217 33% 24%;
+    --input: 217 33% 24%;
+    --ring: 213 94% 68%;
+    --snippet-card: 217 33% 17%;
+    --snippet-hover: 215 28% 20%;
+    --block-container: 217 33% 17%;
+    --block-border: 217 33% 24%;
+    --block-hover: 215 28% 20%;
+    --block-selected: 221 83% 25%;
+    --syntax-tag: 270 91% 75%;
+    --syntax-attribute: 191 91% 65%;
+    --syntax-value: 142 76% 60%;
+    --syntax-text: 210 40% 98%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom scrollbar */
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-md;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
