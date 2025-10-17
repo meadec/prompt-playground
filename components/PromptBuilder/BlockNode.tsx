@@ -1,6 +1,8 @@
 "use client"
 
-import { ChevronDown, ChevronRight, MoreVertical, Pencil, Trash2, Plus } from "lucide-react"
+import { ChevronDown, ChevronRight, MoreVertical, Pencil, Trash2, Plus, GripVertical } from "lucide-react"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -13,6 +15,8 @@ import {
 import type { PromptBlockWithChildren, Snippet } from "@/types"
 import { cn } from "@/lib/utils"
 
+type DropPosition = 'before' | 'after' | 'inside'
+
 interface BlockNodeProps {
   block: PromptBlockWithChildren
   snippet?: Snippet | null
@@ -21,6 +25,8 @@ interface BlockNodeProps {
   onDelete: (block: PromptBlockWithChildren) => void
   onToggleCollapse: (blockId: string) => void
   onAddChild: (parentId: string) => void
+  isDragging?: boolean
+  dropPosition?: DropPosition | null
 }
 
 export function BlockNode({
@@ -31,20 +37,66 @@ export function BlockNode({
   onDelete,
   onToggleCollapse,
   onAddChild,
+  isDragging = false,
+  dropPosition = null,
 }: BlockNodeProps) {
   const hasChildren = block.children && block.children.length > 0
   const isContainer = block.type === 'container'
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging: isSortableDragging,
+  } = useSortable({
+    id: block.id,
+    data: {
+      type: 'block',
+      block,
+    },
+  })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    marginLeft: `${block.depth * 20}px`,
+  }
+
   return (
     <div className="space-y-2">
+      {/* Drop indicator - before */}
+      {dropPosition === 'before' && (
+        <div className="h-0.5 bg-primary rounded-full mx-2 relative">
+          <div className="absolute -left-1 -top-1 w-2 h-2 bg-primary rounded-full" />
+        </div>
+      )}
+
       <div
+        ref={setNodeRef}
+        style={style}
         className={cn(
           "group relative p-3 rounded-lg border bg-block-container hover:border-primary transition-colors",
-          block.isCollapsed && hasChildren && "border-l-4 border-l-primary"
+          block.isCollapsed && hasChildren && "border-l-4 border-l-primary",
+          isSortableDragging && "opacity-50 cursor-grabbing",
+          dropPosition === 'inside' && "ring-2 ring-primary ring-offset-2"
         )}
-        style={{ marginLeft: `${block.depth * 20}px` }}
       >
         <div className="flex items-start gap-2">
+          {/* Drag Handle */}
+          <button
+            className={cn(
+              "flex-shrink-0 cursor-grab active:cursor-grabbing touch-none",
+              "text-muted-foreground hover:text-foreground transition-colors",
+              "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded"
+            )}
+            {...attributes}
+            {...listeners}
+          >
+            <GripVertical className="h-5 w-5" />
+          </button>
+
           {/* Collapse Toggle */}
           {isContainer && hasChildren && (
             <Button
@@ -169,6 +221,13 @@ export function BlockNode({
               />
             )
           })}
+        </div>
+      )}
+
+      {/* Drop indicator - after */}
+      {dropPosition === 'after' && (
+        <div className="h-0.5 bg-primary rounded-full mx-2 relative">
+          <div className="absolute -right-1 -top-1 w-2 h-2 bg-primary rounded-full" />
         </div>
       )}
     </div>
