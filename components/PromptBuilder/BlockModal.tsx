@@ -1,12 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Settings2 } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { AttributesEditor } from "./AttributesEditor"
 import type { PromptBlock, BlockType } from "@/types"
 import type { CreatePromptBlockInput } from "@/lib/validators"
 import { useSnippets } from "@/hooks/use-snippets"
@@ -25,6 +27,8 @@ export function BlockModal({ open, onOpenChange, onSave, block, parentId = null 
   const [xmlTag, setXmlTag] = useState("")
   const [content, setContent] = useState("")
   const [snippetId, setSnippetId] = useState<string | null>(null)
+  const [attributes, setAttributes] = useState<Record<string, string>>({})
+  const [attributesEditorOpen, setAttributesEditorOpen] = useState(false)
 
   useEffect(() => {
     if (block) {
@@ -32,11 +36,13 @@ export function BlockModal({ open, onOpenChange, onSave, block, parentId = null 
       setXmlTag(block.xmlTag || "")
       setContent(block.content)
       setSnippetId(block.snippetId)
+      setAttributes(block.xmlAttributes || {})
     } else {
       setType('text')
       setXmlTag("")
       setContent("")
       setSnippetId(null)
+      setAttributes({})
     }
   }, [block, open])
 
@@ -56,7 +62,7 @@ export function BlockModal({ open, onOpenChange, onSave, block, parentId = null 
       content: type === 'text' ? content : '',
       snippetId: type === 'snippet' ? snippetId : null,
       xmlTag: xmlTag.trim() || null,
-      xmlAttributes: {},
+      xmlAttributes: attributes,
       parentId: parentId || null,
       order,
       depth,
@@ -71,6 +77,7 @@ export function BlockModal({ open, onOpenChange, onSave, block, parentId = null 
     setXmlTag("")
     setContent("")
     setSnippetId(null)
+    setAttributes({})
   }
 
   const isValid = () => {
@@ -106,13 +113,31 @@ export function BlockModal({ open, onOpenChange, onSave, block, parentId = null 
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="xmlTag">XML Tag {type === 'container' ? '(Required)' : '(Optional)'}</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="xmlTag">XML Tag {type === 'container' ? '(Required)' : '(Optional)'}</Label>
+              {xmlTag && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setAttributesEditorOpen(true)}
+                  className="h-8 text-xs"
+                >
+                  <Settings2 className="h-3 w-3 mr-1" />
+                  Attributes ({Object.keys(attributes).length})
+                </Button>
+              )}
+            </div>
             <Input
               id="xmlTag"
               placeholder="e.g., system, role, constraints"
               value={xmlTag}
               onChange={(e) => setXmlTag(e.target.value)}
             />
+            {Object.keys(attributes).length > 0 && (
+              <div className="text-xs text-muted-foreground">
+                Attributes: {Object.entries(attributes).map(([k, v]) => `${k}="${v}"`).join(', ')}
+              </div>
+            )}
           </div>
 
           {type === 'text' && (
@@ -167,6 +192,13 @@ export function BlockModal({ open, onOpenChange, onSave, block, parentId = null 
           </Button>
         </DialogFooter>
       </DialogContent>
+
+      <AttributesEditor
+        open={attributesEditorOpen}
+        onOpenChange={setAttributesEditorOpen}
+        attributes={attributes}
+        onSave={setAttributes}
+      />
     </Dialog>
   )
 }
