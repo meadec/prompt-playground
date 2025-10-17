@@ -87,10 +87,10 @@ export function PromptBuilder() {
           block={node}
           snippet={snippet}
           snippets={snippets}
-          onEdit={() => handleEdit(node)}
-          onDelete={() => handleDeleteClick(node)}
-          onToggleCollapse={() => toggleCollapse(node.id)}
-          onAddChild={() => handleAddChild(node.id)}
+          onEdit={handleEdit}
+          onDelete={handleDeleteClick}
+          onToggleCollapse={toggleCollapse}
+          onAddChild={handleAddChild}
         />
       )
     })
