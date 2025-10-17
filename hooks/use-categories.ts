@@ -1,52 +1,31 @@
 "use client"
 
-import { useState, useEffect, useCallback } from 'react'
-import type { Category } from '@/types'
-import type { CreateCategoryInput } from '@/lib/validators'
-import { storageService } from '@/services/storage.service'
+import { useEffect } from "react"
+import { shallow } from "zustand/shallow"
+import { useSnippetStore } from "@/stores/snippet-store"
 
 export function useCategories() {
-  const [categories, setCategories] = useState<Category[]>([])
-  const [loading, setLoading] = useState(true)
-
-  const loadCategories = useCallback(() => {
-    setLoading(true)
-    try {
-      const data = storageService.getAllCategories()
-      setCategories(data)
-    } catch (error) {
-      console.error('Error loading categories:', error)
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const {
+    categories,
+    loading,
+    createCategory,
+    updateCategory,
+    deleteCategory,
+    refreshCategories,
+  } = useSnippetStore(
+    (state) => ({
+      categories: state.categories,
+      loading: state.loading,
+      createCategory: state.createCategory,
+      updateCategory: state.updateCategory,
+      deleteCategory: state.deleteCategory,
+      refreshCategories: state.refreshCategories,
+    }),
+    shallow
+  )
 
   useEffect(() => {
-    loadCategories()
-  }, [loadCategories])
-
-  const createCategory = useCallback((input: CreateCategoryInput) => {
-    const newCategory = storageService.createCategory(input)
-    setCategories((prev) => [...prev, newCategory].sort((a, b) => a.order - b.order))
-    return newCategory
-  }, [])
-
-  const updateCategory = useCallback((id: string, updates: Partial<Category>) => {
-    const updated = storageService.updateCategory(id, updates)
-    if (updated) {
-      setCategories((prev) =>
-        prev.map((c) => (c.id === id ? updated : c)).sort((a, b) => a.order - b.order)
-      )
-    }
-    return updated
-  }, [])
-
-  const deleteCategory = useCallback((id: string) => {
-    const success = storageService.deleteCategory(id)
-    if (success) {
-      setCategories((prev) => prev.filter((c) => c.id !== id))
-    }
-    return success
+    useSnippetStore.getState().initialize()
   }, [])
 
   return {
@@ -55,6 +34,6 @@ export function useCategories() {
     createCategory,
     updateCategory,
     deleteCategory,
-    refresh: loadCategories,
+    refresh: refreshCategories,
   }
 }

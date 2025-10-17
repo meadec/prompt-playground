@@ -1,69 +1,36 @@
 "use client"
 
-import { useState, useEffect, useCallback } from 'react'
-import type { Snippet } from '@/types'
-import type { CreateSnippetInput } from '@/lib/validators'
-import { storageService } from '@/services/storage.service'
+import { useEffect } from "react"
+import { shallow } from "zustand/shallow"
+import { useSnippetStore } from "@/stores/snippet-store"
 
 export function useSnippets() {
-  const [snippets, setSnippets] = useState<Snippet[]>([])
-  const [loading, setLoading] = useState(true)
-
-  const loadSnippets = useCallback(() => {
-    setLoading(true)
-    try {
-      const data = storageService.getAllSnippets()
-      setSnippets(data)
-    } catch (error) {
-      console.error('Error loading snippets:', error)
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const {
+    snippets,
+    loading,
+    createSnippet,
+    updateSnippet,
+    deleteSnippet,
+    searchSnippets,
+    toggleFavorite,
+    refreshSnippets,
+  } = useSnippetStore(
+    (state) => ({
+      snippets: state.snippets,
+      loading: state.loading,
+      createSnippet: state.createSnippet,
+      updateSnippet: state.updateSnippet,
+      deleteSnippet: state.deleteSnippet,
+      searchSnippets: state.searchSnippets,
+      toggleFavorite: state.toggleFavorite,
+      refreshSnippets: state.refreshSnippets,
+    }),
+    shallow
+  )
 
   useEffect(() => {
-    loadSnippets()
-  }, [loadSnippets])
-
-  const createSnippet = useCallback((input: CreateSnippetInput) => {
-    const newSnippet = storageService.createSnippet(input)
-    setSnippets((prev) => [newSnippet, ...prev])
-    return newSnippet
+    useSnippetStore.getState().initialize()
   }, [])
-
-  const updateSnippet = useCallback((id: string, updates: Partial<Snippet>) => {
-    const updated = storageService.updateSnippet(id, updates)
-    if (updated) {
-      setSnippets((prev) =>
-        prev.map((s) => (s.id === id ? updated : s))
-      )
-    }
-    return updated
-  }, [])
-
-  const deleteSnippet = useCallback((id: string) => {
-    try {
-      const success = storageService.deleteSnippet(id)
-      if (success) {
-        setSnippets((prev) => prev.filter((s) => s.id !== id))
-      }
-      return success
-    } catch (error) {
-      throw error
-    }
-  }, [])
-
-  const searchSnippets = useCallback((query: string) => {
-    return storageService.searchSnippets(query)
-  }, [])
-
-  const toggleFavorite = useCallback((id: string) => {
-    const snippet = snippets.find((s) => s.id === id)
-    if (snippet) {
-      return updateSnippet(id, { isFavorite: !snippet.isFavorite })
-    }
-    return null
-  }, [snippets, updateSnippet])
 
   return {
     snippets,
@@ -73,6 +40,6 @@ export function useSnippets() {
     deleteSnippet,
     searchSnippets,
     toggleFavorite,
-    refresh: loadSnippets,
+    refresh: refreshSnippets,
   }
 }
