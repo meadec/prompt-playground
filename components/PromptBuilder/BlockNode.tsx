@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils"
 interface BlockNodeProps {
   block: PromptBlockWithChildren
   snippet?: Snippet | null
+  snippets?: Snippet[] // Add all snippets for looking up children
   onEdit: () => void
   onDelete: () => void
   onToggleCollapse: () => void
@@ -25,6 +26,7 @@ interface BlockNodeProps {
 export function BlockNode({
   block,
   snippet,
+  snippets = [],
   onEdit,
   onDelete,
   onToggleCollapse,
@@ -151,17 +153,22 @@ export function BlockNode({
       {/* Children */}
       {!block.isCollapsed && hasChildren && (
         <div className="space-y-2">
-          {block.children.map((child) => (
-            <BlockNode
-              key={child.id}
-              block={child}
-              snippet={snippet}
-              onEdit={onEdit}
-              onDelete={onDelete}
-              onToggleCollapse={onToggleCollapse}
-              onAddChild={onAddChild}
-            />
-          ))}
+          {block.children.map((child) => {
+            // Look up each child's snippet
+            const childSnippet = child.snippetId ? snippets.find((s) => s.id === child.snippetId) : null
+            return (
+              <BlockNode
+                key={child.id}
+                block={child}
+                snippet={childSnippet}
+                snippets={snippets}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                onToggleCollapse={onToggleCollapse}
+                onAddChild={onAddChild}
+              />
+            )
+          })}
         </div>
       )}
     </div>

@@ -1,6 +1,6 @@
 # ✨ Prompt Engineer Tool
 
-A modern, elegant, and responsive Next.js web application for constructing XML-based prompts from reusable text snippets. Built specifically for prompt engineers to manage and compose complex prompts efficiently.
+A modern, elegant, and fully responsive Next.js web application for constructing XML-based prompts from reusable text snippets. Built for prompt engineers to manage and compose complex prompts efficiently on any device.
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue?style=flat-square&logo=typescript)
@@ -217,13 +217,13 @@ Change themes via the sun/moon icon in the header.
 ## 🚧 Future Enhancements
 
 - [ ] Drag-and-drop block reordering
-- [ ] Advanced attributes editor for XML tags
-- [ ] Keyboard shortcuts
-- [ ] Template library
-- [ ] Mobile tab navigation
+- [ ] Keyboard shortcuts for power users
+- [ ] Template library with pre-built structures
 - [ ] Snippet variables/placeholders
 - [ ] Version history (undo/redo)
 - [ ] Advanced search with regex
+- [ ] Backend integration for cloud sync
+- [ ] Collaborative editing features
 
 ## 📝 License
 
@@ -233,12 +233,39 @@ MIT License - feel free to use this project however you like!
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Snippets not showing:**
+- Check if search is active - clear the search box
+- Verify you've created snippets (click "+ New")
+
+**Can't delete a snippet:**
+- Error means it's being used in prompt builder
+- Remove snippet references from blocks first
+
+**Preview is empty:**
+- Add blocks to the prompt builder first
+- Preview shows only what's in the builder
+
+**Lost data:**
+- Data is stored in browser localStorage
+- Export regularly for backups
+- Import from your last backup to restore
+
+### Browser Compatibility
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14+
+- Mobile browsers (iOS Safari, Chrome Mobile)
+
 ## 📞 Support
 
 For issues, questions, or suggestions:
 - Open an issue on GitHub
-- Check the `agent.md` file for detailed specifications
+- Check the `agent.md` file for technical specifications
 
 ---
 
-**Built with ❤️ for prompt engineers**
+**Built with ❤️ for prompt engineers by the community**
