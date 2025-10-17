@@ -16,11 +16,11 @@ import { cn } from "@/lib/utils"
 interface BlockNodeProps {
   block: PromptBlockWithChildren
   snippet?: Snippet | null
-  snippets?: Snippet[] // Add all snippets for looking up children
-  onEdit: () => void
-  onDelete: () => void
-  onToggleCollapse: () => void
-  onAddChild: () => void
+  snippets?: Snippet[]
+  onEdit: (block: PromptBlockWithChildren) => void
+  onDelete: (block: PromptBlockWithChildren) => void
+  onToggleCollapse: (blockId: string) => void
+  onAddChild: (parentId: string) => void
 }
 
 export function BlockNode({
@@ -51,7 +51,7 @@ export function BlockNode({
               variant="ghost"
               size="icon"
               className="h-6 w-6 flex-shrink-0"
-              onClick={onToggleCollapse}
+              onClick={() => onToggleCollapse(block.id)}
             >
               {block.isCollapsed ? (
                 <ChevronRight className="h-4 w-4" />
@@ -123,7 +123,7 @@ export function BlockNode({
                 variant="ghost"
                 size="icon"
                 className="h-7 w-7"
-                onClick={onAddChild}
+                onClick={() => onAddChild(block.id)}
               >
                 <Plus className="h-4 w-4" />
               </Button>
@@ -135,12 +135,12 @@ export function BlockNode({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={onEdit}>
+                <DropdownMenuItem onClick={() => onEdit(block)}>
                   <Pencil className="mr-2 h-4 w-4" />
                   Edit
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={onDelete} className="text-destructive">
+                <DropdownMenuItem onClick={() => onDelete(block)} className="text-destructive">
                   <Trash2 className="mr-2 h-4 w-4" />
                   Delete
                 </DropdownMenuItem>
